@@ -13,9 +13,10 @@ const height = window.height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'grey',
+    backgroundColor: '#191970',
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
+
   },
   card:{
     marginTop:20,
@@ -29,6 +30,7 @@ const styles = StyleSheet.create({
     flexDirection:'row',
   },
   cardPic:{
+    backgroundColor:'white',
     borderRadius:40,
     width:80,
     height:80,
@@ -47,8 +49,9 @@ const styles = StyleSheet.create({
     padding:10,
   },
   price:{
+    flex:3,
     flexDirection:'row',
-    marginLeft:150,
+    marginLeft:120,
     justifyContent: 'space-between',
   }
 });

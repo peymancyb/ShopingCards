@@ -2,31 +2,82 @@ import React,{Component} from 'react';
 import {
   Text,
   View,
-  Image
+  Image,
+  TouchableOpacity
 } from 'react-native';
 import styles from './style';
+
+
+const ItemComponent = (props) =>{
+  return(
+    <View>
+      <View style={styles.details}>
+        <Text style={{color:'white',flex:3}}>{props.name}</Text>
+        <View style={styles.price}>
+          <Text style={{color:'white'}}>{props.date}</Text>
+          <Text style={{marginLeft:20,color:'white'}}>{props.currency}{props.price}</Text>
+        </View>
+      </View>
+    </View>
+  );
+}
+
 
 export default class CardComponent extends Component {
   constructor(props){
     super(props);
+    this.state = {
+      items:[],
+      isOn: false
+    };
+    this.showDetails = this.showDetails.bind(this);
   }
+
+  componentDidMount(){
+    this.setState({
+      items: this.props.items
+    });
+  }
+
+  showDetails(){
+    this.setState((prevState)=>({
+        isOn: !prevState.isOn
+      }));
+  }
+
   render() {
+    let numOfItems = this.state.items.length;
+    let total = 0;
+    let itemInArray = this.state.items.map((currentItem,currentIndex)=>{
+      total = total + currentItem.price;
+      return(
+        <ItemComponent
+          key={`key${currentIndex}`}
+          name={currentItem.name}
+          date={currentItem.date}
+          price={currentItem.price}
+          currency={currentItem.currency}
+          total={numOfItems}
+        />
+      );
+    });
+
     return (
       <View style={styles.card}>
-        <View style={styles.cardHeader}>
-          <Image
-            style={styles.cardPic}
-            source={{uri: 'https://facebook.github.io/react-native/docs/assets/favicon.png'}}
-          />
-          <Text style={styles.title}>{this.props.title}</Text>
-        </View>
-        <View style={styles.details}>
-          <Text style={{color:'white'}}>{this.props.name}</Text>
-          <View style={styles.price}>
-            <Text style={{color:'white'}}>{this.props.date}</Text>
-            <Text style={{marginLeft:20,color:'white'}}>{this.props.price}</Text>
+        <TouchableOpacity
+          onPress={()=>this.showDetails()}>
+          <View style={styles.cardHeader}>
+            <Image
+              style={styles.cardPic}
+              source={{uri: this.props.icon}}
+            />
+            <View style={{flexDirection:"column"}}>
+              <Text style={styles.title}>{this.props.title}</Text>
+              <Text style={{color:'white',marginTop:15}}>{numOfItems} transaction</Text>
+            </View>
           </View>
-        </View>
+        </TouchableOpacity>
+          {(this.state.isOn)?<View>{itemInArray}</View>: ''}
       </View>
     );
   }
