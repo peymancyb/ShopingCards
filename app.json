@@ -1,5 +1,15 @@
 {
   "expo": {
-    "sdkVersion": "26.0.0"
+   "name": "Transactions",
+   "icon": "./img/icon.png",
+   "version": "1.0.0",
+   "slug": "Transactions",
+   "sdkVersion": "26.0.0",
+   "ios": {
+     "bundleIdentifier": "com.Transactions.Transactions"
+   },
+   "android": {
+     "package": "com.Transactions.Transactions"
+   }
   }
 }
