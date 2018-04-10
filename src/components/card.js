@@ -44,40 +44,49 @@ export default class CardComponent extends Component {
         isOn: !prevState.isOn
       }));
   }
-
   render() {
-    let numOfItems = this.state.items.length;
+    console.log(this.state.items);
     let total = 0;
-    let itemInArray = this.state.items.map((currentItem,currentIndex)=>{
-      total = total + currentItem.price;
-      return(
-        <ItemComponent
-          key={`key${currentIndex}`}
-          name={currentItem.name}
-          date={currentItem.date}
-          price={currentItem.price}
-          currency={currentItem.currency}
-          total={numOfItems}
-        />
-      );
-    });
-
+    var numOfItems = 0;
+    var itemInArray = '';
+    if(this.state.items !== 'undefined'){
+      numOfItems = this.state.items.length;
+      itemInArray = this.state.items.map((currentItem,currentIndex)=>{
+        total = total + currentItem.price;
+        return(
+          <ItemComponent
+            key={`key${currentIndex}`}
+            name={currentItem.name}
+            date={currentItem.date}
+            price={currentItem.price}
+            currency={currentItem.currency}
+            total={numOfItems}
+          />
+        );
+      });
+    }else{
+      numOfItems = 0;
+      itemInArray = ''
+    }
     return (
       <View style={styles.card}>
+
         <TouchableOpacity
-          onPress={()=>this.showDetails()}>
-          <View style={styles.cardHeader}>
-            <Image
-              style={styles.cardPic}
-              source={{uri: this.props.icon}}
-            />
-            <View style={{flexDirection:"column"}}>
-              <Text style={styles.title}>{this.props.title}</Text>
-              <Text style={{color:'white',marginTop:15}}>{numOfItems} transaction</Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-          {(this.state.isOn)?<View>{itemInArray}</View>: ''}
+         onPress={()=>this.showDetails()}>
+         <View style={styles.cardHeader}>
+           <Image
+             style={styles.cardPic}
+             source={{uri: this.props.icon}}
+           />
+           <View style={{flexDirection:"column"}}>
+             <Text style={styles.title}>{this.props.title}</Text>
+             <Text style={{color:'white',marginTop:15}}>{numOfItems} transaction</Text>
+           </View>
+         </View>
+       </TouchableOpacity>
+         {(this.state.isOn)?<View>{itemInArray}</View>: ''}
+
+
       </View>
     );
   }

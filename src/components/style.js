@@ -13,12 +13,13 @@ const height = window.height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#191970',
+    backgroundColor: '#5067FF',
     alignItems: 'center',
     // justifyContent: 'center',
 
   },
   card:{
+    borderRadius:5,
     marginTop:20,
     width: width - 10,
     borderColor: 'white',
