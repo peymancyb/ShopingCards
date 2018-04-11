@@ -6,11 +6,21 @@ import {
   TextInput,
   AsyncStorage,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
   } from 'react-native';
 import CardComponent from './src/components/card';
 import styles from './src/components/style';
-import { Container, Header, Left, Body, Right, Button, Icon, Title,Fab } from 'native-base';
+import {
+  Footer,
+  FooterTab,
+  Container,
+  Header,
+  Left,
+  Body,
+  Right,
+  Button,
+  Icon,
+  Title,Fab } from 'native-base';
 
 
 console.disableYellowBox = true;
@@ -19,9 +29,11 @@ export default class App extends Component {
   constructor(){
     super();
     this.state = {
+      showCondition:false,
       active:false,
+      activeFab:false,
       datas:[],
-
+      isRemove:false,
       category:null,
       img:'',
       name:'',
@@ -29,9 +41,16 @@ export default class App extends Component {
       currency:'$',
       price:'',
       myKey: null,
+      removeCategory:'',
     };
 
     this.addCategory = this.addCategory.bind(this);
+    this.options = this.options.bind(this);
+    this.removeCategory = this.removeCategory.bind(this);
+    this.saveKey = this.saveKey.bind(this);
+    this.resetKey = this.resetKey.bind(this);
+    this.getKey = this.getKey.bind(this);
+
   }
 
   addCategory(){
@@ -51,13 +70,146 @@ export default class App extends Component {
     };
     let oldData = this.state.datas;
     oldData.push(obj);
+
+    this.saveKey(JSON.stringify(oldData));
+
     this.setState({
       datas: oldData
     },()=>this.setState({
-      active: !this.state.active
+      activeFab: false,
+      showCondition: false,
+      active: !this.state.active,
+      category:null,
+      img:'',
+      name:'',
+      date:'2018',
+      currency:'$',
+      price:'',
+      myKey: null,
+      removeCategory:'',
     }));
   }
 
+
+
+removeCategory(){
+  let toBeRemoved = this.state.removeCategory;
+  let oldData = this.state.datas;
+  var indexOfItem = null;
+
+  oldData.map((currentItem,currentIndex)=>{
+    if(currentItem.category === this.state.removeCategory){
+      indexOfItem = currentIndex;
+    };
+  });
+
+  if (indexOfItem > -1) {
+    oldData.splice((indexOfItem+1), 1);
+  }
+  console.log(oldData);
+
+  this.saveKey(JSON.stringify(oldData));
+
+  this.setState({
+    datas: oldData
+  },()=>this.setState({
+    activeFab: false,
+    isRemove: !this.state.active,
+    showCondition: false,
+    category:null,
+    img:'',
+    name:'',
+    date:'2018',
+    currency:'$',
+    price:'',
+    myKey: null,
+    removeCategory:'',
+  }));
+
+}
+
+
+options(){
+  if(this.state.isRemove){
+    return(
+      <View style={[styles.container,{justifyContent:"center"}]}>
+        <Text style={{color:'white',fontSize:18}}> Delete Category</Text>
+        <TextInput
+          value={this.state.removeCategory}
+          onChangeText={(removeCategory)=>this.setState({removeCategory:removeCategory})}
+          placeholder={'Category Name'}
+          placeholderTextColor={'white'}
+          style={styles.inputStyle}/>
+          <View style={{justifyContent:"center",alignItems:"center"}}>
+              <TouchableOpacity
+                onPress={()=>this.removeCategory()}
+                style={styles.addBtn}>
+                <Text style={{color:'black'}}>Remove Category</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={()=>this.setState({isRemove:false,showCondition:false})}
+                style={styles.cancelBtn}>
+                <Text style={{color:'black'}}>Cancel</Text>
+              </TouchableOpacity>
+            </View>
+      </View>
+    );
+  }
+  if(this.state.active){
+    return (
+      <View style={[styles.container,{justifyContent:"center"}]}>
+      <TextInput
+        value={this.state.category}
+        onChangeText={(category)=>this.setState({category:category})}
+        placeholder={'Category Name'}
+        placeholderTextColor={'white'}
+        style={styles.inputStyle}/>
+        <Text style={styles.transactionText}>--- Transaction --- </Text>
+        <TextInput
+          value={this.state.name}
+          onChangeText={(name)=>this.setState({name:name})}
+          placeholder={'Name'}
+          placeholderTextColor={'white'}
+          style={styles.inputStyle}/>
+          <TextInput
+            value={this.state.date}
+            onChangeText={(date)=>this.setState({date:date})}
+            placeholder={'Date'}
+            placeholderTextColor={'white'}
+            style={styles.inputStyle}/>
+            <TextInput
+              value={this.state.currency}
+              onChangeText={(currency)=>this.setState({currency:currency})}
+              placeholder={'Currency'}
+              placeholderTextColor={'white'}
+              style={styles.inputStyle}/>
+              <TextInput
+                value={this.state.price}
+                onChangeText={(price)=>this.setState({price:price})}
+                placeholder={'Price'}
+                placeholderTextColor={'white'}
+                style={styles.inputStyle}/>
+                <TextInput
+                  value={this.state.img}
+                  onChangeText={(img)=>this.setState({img:img})}
+                  placeholder={'Image URL'}
+                  placeholderTextColor={'white'}
+                  style={styles.inputStyle}/>
+      <View style={{justifyContent:"center",alignItems:"center"}}>
+          <TouchableOpacity
+            onPress={()=>this.addCategory()}
+            style={styles.addBtn}>
+            <Text style={{color:'black'}}>Add Category</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={()=>this.setState({active:false,showCondition:false})}
+            style={styles.cancelBtn}>
+            <Text style={{color:'black'}}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
+    </View>);
+  }
+}
 
   async getKey() {
   try {
@@ -96,7 +248,6 @@ componentDidMount(){
 
 
   render() {
-    console.log(this.state.datas);
     let cards = this.state.datas.map((currentItem , currentIndex)=>{
       return(
         <CardComponent
@@ -121,74 +272,34 @@ componentDidMount(){
             </View>
           </Left>
         </Header>
-          {this.state.active ?
-            <View style={[styles.container,{justifyContent:"center"}]}>
-              <TextInput
-                value={this.state.category}
-                onChangeText={(category)=>this.setState({category:category})}
-                placeholder={'Category Name'}
-                placeholderTextColor={'white'}
-                style={{width:250,height:40,borderColor:"white",borderWidth:1,padding:10}}/>
-                <TextInput
-                  value={this.state.name}
-                  onChangeText={(name)=>this.setState({name:name})}
-                  placeholder={'Name'}
-                  placeholderTextColor={'white'}
-                  style={{width:250,height:40,borderColor:"white",borderWidth:1,padding:10}}/>
-                  <TextInput
-                    value={this.state.date}
-                    onChangeText={(date)=>this.setState({date:date})}
-                    placeholder={'Date'}
-                    placeholderTextColor={'white'}
-                    style={{width:250,height:40,borderColor:"white",borderWidth:1,padding:10}}/>
-                    <TextInput
-                      value={this.state.currency}
-                      onChangeText={(currency)=>this.setState({currency:currency})}
-                      placeholder={'Currency'}
-                      placeholderTextColor={'white'}
-                      style={{width:250,height:40,borderColor:"white",borderWidth:1,padding:10}}/>
-                      <TextInput
-                        value={this.state.price}
-                        onChangeText={(price)=>this.setState({price:price})}
-                        placeholder={'Price'}
-                        placeholderTextColor={'white'}
-                        style={{width:250,height:40,borderColor:"white",borderWidth:1,padding:10}}/>
-                        <TextInput
-                          value={this.state.img}
-                          onChangeText={(img)=>this.setState({img:img})}
-                          placeholder={'Image URL'}
-                          placeholderTextColor={'white'}
-                          style={{width:250,height:40,borderColor:"white",borderWidth:1,padding:10}}/>
-              <View
-                style={{justifyContent:"center",alignItems:"center"}}>
-                  <TouchableOpacity
-                    onPress={()=>this.addCategory()}
-                    style={{alignItems:'center',justifyContent:'center',width:150,height:30,backgroundColor:"white",marginTop:10}}>
-                    <Text style={{color:'black'}}>Add Category</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    // onPress={}
-                    style={{alignItems:'center',justifyContent:'center',width:150,height:30,backgroundColor:"white",marginTop:8}}>
-                    <Text style={{color:'black'}}>Cancel</Text>
-                  </TouchableOpacity>
-                </View>
-            </View>
-            :
-            <View style={styles.container}>
-              <ScrollView>
-              {cards}
-            </ScrollView>
-            </View>
-          }
-          <Fab
-             active={this.state.active}
-             direction="up"
-             containerStyle={{ }}
-             style={{ backgroundColor: '#191970' }}
-             position="bottomRight"
-             onPress={() => this.setState({ active: !this.state.active })}>
-               <Icon name="add" style={{fontSize:30,color:'white'}} />
-           </Fab>
+
+
+            {this.state.showCondition ?
+              this.options()
+              :
+              <View style={styles.container}>
+                <ScrollView>
+                {cards}
+              </ScrollView>
+              </View>
+            }
+
+
+
+            <Footer style={{backgroundColor:"#191970"}}>
+              <FooterTab>
+                <TouchableOpacity
+                   onPress={() => this.setState({activeFab: false ,showCondition: true, active: true},()=>this.setState({}))}
+                   style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor: '#34A34F' }}>
+                  <Icon name="add" style={{fontSize:45,color:'white'}} />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.setState({activeFab: false ,showCondition: true,isRemove: true})}
+                  style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor: '#DD5144' }}>
+                  <Icon style={{fontSize:45}} name="remove" />
+                </TouchableOpacity>
+              </FooterTab>
+            </Footer>
       </Container>
     );
   }
@@ -198,66 +309,26 @@ componentDidMount(){
 
 
 
-// {
-//   id:1,
-//   title: 'shoppping',
-//   icon: 'http://www.endlessicons.com/wp-content/uploads/2012/11/shopping-cart-icon.png',
-//   items:[
-//     {
-//       name: 'Zara man',
-//       date: 'sept 10',
-//       price: 100,
-//       currency: '$',
-//     },
-//     {
-//       name: 'Zara woman',
-//       date: 'sept 29',
-//       price: 100,
-//       currency: '$',
-//     },
-//   ]
-// },
-// {
-//   id:2,
-//   title: 'Transport',
-//   icon: 'https://cdn4.iconfinder.com/data/icons/dot/256/bus.png',
-//   items:[
-//     {
-//       name: 'Bmw',
-//       date: 'sept 12',
-//       price: 100,
-//       currency: '$',
-//     },
-//     {
-//       name: 'Mercedes-benz',
-//       date: 'sept 10',
-//       price: 140,
-//       currency: '$',
-//     },
-//     {
-//       name: 'Ford',
-//       date: 'sept 18',
-//       price: 90,
-//       currency: '$',
-//     }
-//   ],
-// },
-// {
-//   id:3,
-//   title: 'Travelling',
-//   icon: 'https://cdn3.iconfinder.com/data/icons/vacation-4/32/vacation_25-512.png',
-//   items:[
-//     {
-//       name: 'USA',
-//       date: 'sept 20',
-//       price: 1130,
-//       currency: '$',
-//     },
-//     {
-//       name: 'United Kingdom',
-//       date: 'sept 5',
-//       price: 2000,
-//       currency: '$',
-//     },
-//   ],
-// }
+
+           //  <Fab
+           //   active={this.state.activeFab}
+           //   direction="up"
+           //   containerStyle={{ }}
+           //   style={{ backgroundColor: '#191970' }}
+           //   position="bottomRight"
+           //   onPress={() => this.setState({ activeFab: !this.state.activeFab })}>
+           //   <Icon name="open" />
+           //
+           //   <TouchableOpacity
+           //      onPress={() => this.setState({activeFab: false ,showCondition: true, active: true},()=>this.setState({}))}
+           //      style={{ backgroundColor: '#34A34F' }}>
+           //     <Icon name="add" style={{fontSize:30,color:'white'}} />
+           //   </TouchableOpacity>
+           //
+           //   <TouchableOpacity
+           //     onPress={() => this.setState({activeFab: false ,showCondition: true,isRemove: true})}
+           //     style={{ backgroundColor: '#DD5144' }}>
+           //     <Icon name="remove" />
+           //   </TouchableOpacity>
+           //
+           // </Fab>

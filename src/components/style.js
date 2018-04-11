@@ -54,6 +54,39 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     marginLeft:120,
     justifyContent: 'space-between',
+  },
+  inputStyle:{
+    width:250,
+    height:40,
+    borderColor:"white",
+    borderWidth:1,
+    padding:10,
+    marginTop:10,
+    borderRadius:5,
+    color:'white',
+  },
+  addBtn:{
+    alignItems:'center',
+    justifyContent:'center',
+    width:150,
+    height:30,
+    backgroundColor:"white",
+    marginTop:15,
+    borderRadius:5,
+  },
+  cancelBtn:{
+    alignItems:'center',
+    justifyContent:'center',
+    width:150,
+    height:30,
+    backgroundColor:"white",
+    marginTop:8,
+    borderRadius:5,
+  },
+  transactionText:{
+    color:'white',
+    fontSize:18,
+    marginTop:5,
   }
 });
 
