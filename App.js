@@ -98,13 +98,13 @@ removeCategory(){
   var indexOfItem = null;
 
   oldData.map((currentItem,currentIndex)=>{
-    if(currentItem.category === this.state.removeCategory){
+    if(currentItem.title === this.state.removeCategory){
       indexOfItem = currentIndex;
     };
   });
 
   if (indexOfItem > -1) {
-    oldData.splice((indexOfItem+1), 1);
+    oldData.splice((indexOfItem), 1);
   }
   console.log(oldData);
 
