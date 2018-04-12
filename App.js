@@ -82,8 +82,8 @@ export default class App extends Component {
       category:null,
       img:'',
       name:'',
-      date:'2018',
-      currency:'$',
+      date:'',
+      currency:'',
       price:'',
       myKey: null,
       removeCategory:'',
@@ -283,7 +283,6 @@ componentDidMount(){
               </ScrollView>
               </View>
             }
-
 
 
             <Footer style={{backgroundColor:"#191970"}}>
