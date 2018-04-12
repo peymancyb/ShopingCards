@@ -37,8 +37,8 @@ export default class App extends Component {
       category:null,
       img:'',
       name:'',
-      date:'2018',
-      currency:'$',
+      date:'',
+      currency:'',
       price:'',
       myKey: null,
       removeCategory:'',
@@ -304,31 +304,3 @@ componentDidMount(){
     );
   }
 }
-
-
-
-
-
-
-           //  <Fab
-           //   active={this.state.activeFab}
-           //   direction="up"
-           //   containerStyle={{ }}
-           //   style={{ backgroundColor: '#191970' }}
-           //   position="bottomRight"
-           //   onPress={() => this.setState({ activeFab: !this.state.activeFab })}>
-           //   <Icon name="open" />
-           //
-           //   <TouchableOpacity
-           //      onPress={() => this.setState({activeFab: false ,showCondition: true, active: true},()=>this.setState({}))}
-           //      style={{ backgroundColor: '#34A34F' }}>
-           //     <Icon name="add" style={{fontSize:30,color:'white'}} />
-           //   </TouchableOpacity>
-           //
-           //   <TouchableOpacity
-           //     onPress={() => this.setState({activeFab: false ,showCondition: true,isRemove: true})}
-           //     style={{ backgroundColor: '#DD5144' }}>
-           //     <Icon name="remove" />
-           //   </TouchableOpacity>
-           //
-           // </Fab>

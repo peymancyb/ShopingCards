@@ -6,21 +6,13 @@ import {
   TouchableOpacity
 } from 'react-native';
 import styles from './style';
+import {
+  Icon,
+  Right
+} from 'native-base';
+import ItemComponent from './transaction';
 
 
-const ItemComponent = (props) =>{
-  return(
-    <View>
-      <View style={styles.details}>
-        <Text style={{color:'white',flex:3}}>{props.name}</Text>
-        <View style={styles.price}>
-          <Text style={{color:'white'}}>{props.date}</Text>
-          <Text style={{marginLeft:20,color:'white'}}>{props.currency}{props.price}</Text>
-        </View>
-      </View>
-    </View>
-  );
-}
 
 
 export default class CardComponent extends Component {
@@ -44,8 +36,8 @@ export default class CardComponent extends Component {
         isOn: !prevState.isOn
       }));
   }
+  
   render() {
-    console.log(this.state.items);
     let total = 0;
     var numOfItems = 0;
     var itemInArray = '';
@@ -61,6 +53,7 @@ export default class CardComponent extends Component {
             price={currentItem.price}
             currency={currentItem.currency}
             total={numOfItems}
+            items={this.state.items}
           />
         );
       });
@@ -68,6 +61,7 @@ export default class CardComponent extends Component {
       numOfItems = 0;
       itemInArray = ''
     }
+
     return (
       <View style={styles.card}>
 
