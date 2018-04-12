@@ -64,7 +64,6 @@ export default class ItemComponent extends Component{
       price:'',
     });
 
-
   }
   removetransaction(){
     let obj = {
@@ -218,14 +217,7 @@ export default class ItemComponent extends Component{
             :
           ''}
 
-
-
         </View>
-
-
-
-
-
       </View>
     );
   }
