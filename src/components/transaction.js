@@ -11,7 +11,7 @@ import {
   Icon,
   Right,
   Picker,
-  Form
+  Form,
 } from 'native-base';
 
 import PopupDialog, {
@@ -181,7 +181,7 @@ class ItemComponent extends Component{
                     onChangeText={(name)=>this.setState({name:name})}
                     placeholder={'Transaction'}
                     placeholderTextColor={'#cacaca'}
-                    style={{borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:28,borderRadius:10,padding:5}}/>
+                    style={{textAlign:'center',borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:32,borderRadius:10,padding:5}}/>
                     <DatePicker
                             style={{width: 250}}
                             date={this.state.date}
@@ -194,7 +194,7 @@ class ItemComponent extends Component{
                             customStyles={{
                               dateInput: {
                                 width: 250,
-                                height:28,
+                                height:32,
                                 borderColor:'#34A34F',
                                 marginLeft: 0,
                                 padding:5,
@@ -205,18 +205,29 @@ class ItemComponent extends Component{
                             }}
                             onDateChange={(date) => {this.setState({date: date})}}
                           />
-                    <TextInput
-                      value={this.state.currency}
-                      onChangeText={(currency)=>this.setState({currency:currency})}
-                      placeholder={'Currency'}
-                      placeholderTextColor={'#cacaca'}
-                      style={{borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:28,borderRadius:10,padding:5}}/>
+
+                          <Form>
+                            <Picker
+                              mode="dropdown"
+                              style={{borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:32,borderRadius:10,padding:5,justifyContent:"center",alignItems:"center"}}
+                              placeholder="Currency"
+                              placeholderStyle={{ color: "#bfc6ea" }}
+                              placeholderIconColor="#007aff"
+                              selectedValue={this.state.currency}
+                              onValueChange={(value)=>this.setState({currency:value})}
+                            >
+                              <Picker.Item label="Dollar" value="$" />
+                              <Picker.Item label="Pound" value="£" />
+                              <Picker.Item label="Euro" value="€" />
+                            </Picker>
+                          </Form>
+
                       <TextInput
                         value={this.state.price}
                         onChangeText={(price)=>this.setState({price:price})}
                         placeholder={'Price'}
                         placeholderTextColor={'#cacaca'}
-                        style={{borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:28,borderRadius:10,padding:5}}/>
+                        style={{textAlign:'center',borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:32,borderRadius:10,padding:5}}/>
                     <View style={{justifyContent:"center",alignItems:"center"}}>
                       <TouchableOpacity
                         onPress={()=>this.addtransaction()}
@@ -241,26 +252,56 @@ class ItemComponent extends Component{
                     value={this.state.name}
                     onChangeText={(name)=>this.setState({name:name})}
                     placeholder={'Transaction'}
-                    placeholderTextColor={'black'}
-                    style={{borderColor:'#DD5144',borderWidth:1,marginTop:20,width:250,height:25,borderRadius:10,padding:5}}/>
-                    <TextInput
-                      value={this.state.date}
-                      onChangeText={(date)=>this.setState({date:date})}
-                      placeholder={'Date'}
-                      placeholderTextColor={'black'}
-                      style={{borderColor:'#DD5144',borderWidth:1,marginTop:20,width:250,height:25,borderRadius:10,padding:5}}/>
-                    <TextInput
-                      value={this.state.currency}
-                      onChangeText={(currency)=>this.setState({currency:currency})}
-                      placeholder={'Currency'}
-                      placeholderTextColor={'black'}
-                      style={{borderColor:'#DD5144',borderWidth:1,marginTop:20,width:250,height:25,borderRadius:10,padding:5}}/>
+                    placeholderTextColor={'#cacaca'}
+                    style={{textAlign:'center',borderColor:'#DD5144',borderWidth:1,marginTop:20,width:250,height:32,borderRadius:10,padding:5}}/>
+
+
+                    <DatePicker
+                            style={{width: 250}}
+                            date={this.state.date}
+                            mode="date"
+                            placeholder="select date"
+                            format="YYYY-MM-DD"
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            showIcon = {false}
+                            customStyles={{
+                              dateInput: {
+                                width: 250,
+                                height:32,
+                                borderColor:'#DD5144',
+                                marginLeft: 0,
+                                padding:5,
+                                marginTop:20,
+                                borderRadius:10,
+                                borderWidth:1,
+                              }
+                            }}
+                            onDateChange={(date) => {this.setState({date: date})}}
+                          />
+
+                      <Form>
+                        <Picker
+                          mode="dropdown"
+                          style={{borderColor:'#DD5144',borderWidth:1,marginTop:20,width:250,height:32,borderRadius:10,padding:5,justifyContent:"center",alignItems:"center"}}
+                          placeholder="Currency"
+                          placeholderStyle={{ color: "#bfc6ea" }}
+                          placeholderIconColor="#007aff"
+                          selectedValue={this.state.currency}
+                          onValueChange={(value)=>this.setState({currency:value})}
+                        >
+                          <Picker.Item label="Dollar" value="$" />
+                          <Picker.Item label="Pound" value="£" />
+                          <Picker.Item label="Euro" value="€" />
+                        </Picker>
+                      </Form>
+
                       <TextInput
                         value={this.state.price}
                         onChangeText={(price)=>this.setState({price:price})}
                         placeholder={'Price'}
-                        placeholderTextColor={'black'}
-                        style={{borderColor:'#DD5144',borderWidth:1,marginTop:20,width:250,height:25,borderRadius:10,padding:5}}/>
+                        placeholderTextColor={'#cacaca'}
+                        style={{textAlign:'center',borderColor:'#DD5144',borderWidth:1,marginTop:20,width:250,height:32,borderRadius:10,padding:5}}/>
                     <View style={{justifyContent:"center",alignItems:"center"}}>
                       <TouchableOpacity
                         onPress={()=>this.removetransaction()}
