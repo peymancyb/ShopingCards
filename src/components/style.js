@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     padding:10,
   },
   price:{
-    flex:3,
+    flex:5,
     flexDirection:'row',
     marginLeft:120,
     justifyContent: 'space-between',

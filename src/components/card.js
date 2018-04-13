@@ -11,15 +11,17 @@ import {
   Right
 } from 'native-base';
 import ItemComponent from './transaction';
+import store from '../../redux/main'
+import {updateTransaction} from '../../redux/actions/transactionAction';
+import {Provider,connect} from 'react-redux';
 
 
 
-
-export default class CardComponent extends Component {
+class CardComponent extends Component {
   constructor(props){
     super(props);
     this.state = {
-      items:[],
+      datas:[],
       isOn: false
     };
     this.showDetails = this.showDetails.bind(this);
@@ -27,7 +29,7 @@ export default class CardComponent extends Component {
 
   componentDidMount(){
     this.setState({
-      items: this.props.items
+      datas: this.props.transaction.transaction
     });
   }
 
@@ -36,35 +38,19 @@ export default class CardComponent extends Component {
         isOn: !prevState.isOn
       }));
   }
-  
-  render() {
-    let total = 0;
-    var numOfItems = 0;
-    var itemInArray = '';
-    if(this.state.items !== 'undefined'){
-      numOfItems = this.state.items.length;
-      itemInArray = this.state.items.map((currentItem,currentIndex)=>{
-        total = total + currentItem.price;
-        return(
-          <ItemComponent
-            key={`key${currentIndex}`}
-            name={currentItem.name}
-            date={currentItem.date}
-            price={currentItem.price}
-            currency={currentItem.currency}
-            total={numOfItems}
-            items={this.state.items}
-          />
-        );
-      });
-    }else{
-      numOfItems = 0;
-      itemInArray = ''
-    }
 
+  render() {
+    var itemInArray,numOfItems ;
+    this.state.datas.map((currentItem,currentIndex)=>{
+      if(currentItem.items){
+        numOfItems = currentItem.items.length;
+      }else{
+        numOfItems = 0;
+      }
+      itemInArray = <ItemComponent key={`key${currentItem.id}`} item = {currentItem} itemArray = {currentItem.items}/>;
+    });
     return (
       <View style={styles.card}>
-
         <TouchableOpacity
          onPress={()=>this.showDetails()}>
          <View style={styles.cardHeader}>
@@ -79,9 +65,15 @@ export default class CardComponent extends Component {
          </View>
        </TouchableOpacity>
          {(this.state.isOn)?<View>{itemInArray}</View>: ''}
-
-
       </View>
     );
   }
 }
+
+
+
+export default connect((store)=>{
+  return{
+    transaction: store.transaction
+  }
+})(CardComponent);

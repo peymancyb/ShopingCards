@@ -9,7 +9,9 @@ import {
 import styles from './style';
 import {
   Icon,
-  Right
+  Right,
+  Picker,
+  Form
 } from 'native-base';
 
 import PopupDialog, {
@@ -19,6 +21,11 @@ import PopupDialog, {
   ScaleAnimation,
   FadeAnimation,
  } from 'react-native-popup-dialog';
+ import store from '../../redux/main'
+ import {updateTransaction} from '../../redux/actions/transactionAction';
+ import {Provider,connect} from 'react-redux';
+ import DatePicker from 'react-native-datepicker';
+
 
 
 
@@ -28,25 +35,35 @@ const fadeAnimation = new FadeAnimation({ animationDuration: 150 });
 
 
 
-export default class ItemComponent extends Component{
+class ItemComponent extends Component{
   constructor(props){
     super(props);
     this.state = {
-      items:this.props.items,
+      items: [],
+      item: null,
       show:false,
       remove:false,
       name:'',
       currency:'',
       date:'',
       price:'',
+      itemArray:[],
     };
     this.addtransaction = this.addtransaction.bind(this);
     this.removetransaction = this.removetransaction.bind(this);
   }
+
+  componentDidMount(){
+    this.setState({
+      items: this.props.transaction.transaction,
+      item: this.props.item,
+      itemArray: this.props.itemArray,
+    });
+  }
+
+
   addtransaction(){
-
-    let oldArr = this.state.items;
-
+    let mainObj = this.state.item;
     let obj = {
       currency: this.state.currency,
       date: this.state.date,
@@ -54,10 +71,21 @@ export default class ItemComponent extends Component{
       price: this.state.price
     };
 
-    oldArr.push(obj);
+    let newArr = this.state.items.map((currentItem,currentIndex)=>{
+        if(currentItem.id === mainObj.id && currentItem.title === mainObj.title){
+           return {
+              ...currentItem,
+              items: [...currentItem.items, obj]
+           };
+        }
+        else return currentItem;
+      });
+
+    this.props.dispatch(updateTransaction(newArr));
+
     this.setState({
       show:false,
-      items: oldArr,
+      items: newArr,
       name:'',
       currency:'',
       date:'',
@@ -65,6 +93,7 @@ export default class ItemComponent extends Component{
     });
 
   }
+
   removetransaction(){
     let obj = {
       currency: this.state.currency,
@@ -82,6 +111,8 @@ export default class ItemComponent extends Component{
     if (indexOfItem > -1) {
       oldArr.splice((indexOfItem), 1);
     }
+
+
     this.setState({
       remove:false,
       items: oldArr,
@@ -90,20 +121,28 @@ export default class ItemComponent extends Component{
       date:'',
       price:'',
     });
+
   }
 
   render(){
-    let transactions = this.state.items.map((currentItem,currentIndex)=>{
-      return(
-          <View style={styles.details} key={`currentItem${currentIndex}`}>
-            <Text style={{color:'white',flex:3}}>{currentItem.name}</Text>
-            <View style={styles.price}>
-              <Text style={{color:'white'}}>{currentItem.date}</Text>
-              <Text style={{marginLeft:20,color:'white'}}>{currentItem.currency}{currentItem.price}</Text>
+    console.log(this.state.items);
+    let transactions = '';
+
+    transactions = this.state.items.map((currentItem)=>{
+      return currentItem.items.map((currentData)=>{
+        return (
+            <View style={styles.details} key={`currentItem${currentData}`}>
+              <Text style={{color:'white',flex:3}}>{currentData.name}</Text>
+              <View style={styles.price}>
+                <Text style={{color:'white'}}>{currentData.date}</Text>
+                <Text style={{marginLeft:20,color:'white'}}>{currentData.currency}{currentData.price}</Text>
+              </View>
             </View>
-          </View>
-      );
+        );
+      });
     });
+
+
 
     return(
       <View>
@@ -141,26 +180,43 @@ export default class ItemComponent extends Component{
                     value={this.state.name}
                     onChangeText={(name)=>this.setState({name:name})}
                     placeholder={'Transaction'}
-                    placeholderTextColor={'black'}
-                    style={{borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:25,borderRadius:10,padding:5}}/>
-                    <TextInput
-                      value={this.state.date}
-                      onChangeText={(date)=>this.setState({date:date})}
-                      placeholder={'Date'}
-                      placeholderTextColor={'black'}
-                      style={{borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:25,borderRadius:10,padding:5}}/>
+                    placeholderTextColor={'#cacaca'}
+                    style={{borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:28,borderRadius:10,padding:5}}/>
+                    <DatePicker
+                            style={{width: 250}}
+                            date={this.state.date}
+                            mode="date"
+                            placeholder="select date"
+                            format="YYYY-MM-DD"
+                            confirmBtnText="Confirm"
+                            cancelBtnText="Cancel"
+                            showIcon = {false}
+                            customStyles={{
+                              dateInput: {
+                                width: 250,
+                                height:28,
+                                borderColor:'#34A34F',
+                                marginLeft: 0,
+                                padding:5,
+                                marginTop:20,
+                                borderRadius:10,
+                                borderWidth:1,
+                              }
+                            }}
+                            onDateChange={(date) => {this.setState({date: date})}}
+                          />
                     <TextInput
                       value={this.state.currency}
                       onChangeText={(currency)=>this.setState({currency:currency})}
                       placeholder={'Currency'}
-                      placeholderTextColor={'black'}
-                      style={{borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:25,borderRadius:10,padding:5}}/>
+                      placeholderTextColor={'#cacaca'}
+                      style={{borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:28,borderRadius:10,padding:5}}/>
                       <TextInput
                         value={this.state.price}
                         onChangeText={(price)=>this.setState({price:price})}
                         placeholder={'Price'}
-                        placeholderTextColor={'black'}
-                        style={{borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:25,borderRadius:10,padding:5}}/>
+                        placeholderTextColor={'#cacaca'}
+                        style={{borderColor:'#34A34F',borderWidth:1,marginTop:20,width:250,height:28,borderRadius:10,padding:5}}/>
                     <View style={{justifyContent:"center",alignItems:"center"}}>
                       <TouchableOpacity
                         onPress={()=>this.addtransaction()}
@@ -222,3 +278,10 @@ export default class ItemComponent extends Component{
     );
   }
 }
+
+
+export default connect((store)=>{
+  return{
+    transaction: store.transaction
+  }
+})(ItemComponent);
