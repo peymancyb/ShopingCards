@@ -27,13 +27,8 @@ import PopupDialog, {
  import DatePicker from 'react-native-datepicker';
 
 
-
-
-
 const scaleAnimation = new ScaleAnimation();
 const fadeAnimation = new FadeAnimation({ animationDuration: 150 });
-
-
 
 class ItemComponent extends Component{
   constructor(props){
@@ -95,27 +90,34 @@ class ItemComponent extends Component{
   }
 
   removetransaction(){
+    let mainObj = this.state.item;
     let obj = {
       currency: this.state.currency,
       date: this.state.date,
       name: this.state.name,
       price: this.state.price
     };
-    let oldArr = this.state.items;
-    var indexOfItem = null;
-    oldArr.map((currentItem,currentIndex)=>{
-      if(currentItem.currency === obj.currency && currentItem.date === obj.date &&  currentItem.name === obj.name && currentItem.price === obj.price){
-        indexOfItem = currentIndex;
+
+    let newArr = this.state.items;
+
+    var tempArr = newArr.map((curr)=>{
+      let newObj = {
+        items: curr.items.filter((ell)=>{
+              if(ell.currency === obj.currency && ell.date === obj.date &&  ell.name === obj.name && ell.price === obj.price){
+                 return false;
+              }else{
+                 return true;
+               }
+             }
+          )
       };
+      return Object.assign({},curr,newObj);
     });
-    if (indexOfItem > -1) {
-      oldArr.splice((indexOfItem), 1);
-    }
 
 
     this.setState({
       remove:false,
-      items: oldArr,
+      items: tempArr,
       name:'',
       currency:'',
       date:'',
@@ -125,17 +127,14 @@ class ItemComponent extends Component{
   }
 
   render(){
-    console.log(this.state.items);
-    let transactions = '';
-
-    transactions = this.state.items.map((currentItem)=>{
-      return currentItem.items.map((currentData)=>{
+    let transactions = this.state.items.map((currentItem)=>{
+      return currentItem.items.map((currentDetails)=>{
         return (
-            <View style={styles.details} key={`currentItem${currentData}`}>
-              <Text style={{color:'white',flex:3}}>{currentData.name}</Text>
+            <View style={styles.details} key={`currentItem${currentItem.id}`}>
+              <Text style={{color:'white',flex:3}}>{currentDetails.name}</Text>
               <View style={styles.price}>
-                <Text style={{color:'white'}}>{currentData.date}</Text>
-                <Text style={{marginLeft:20,color:'white'}}>{currentData.currency}{currentData.price}</Text>
+                <Text style={{color:'white'}}>{currentDetails.date}</Text>
+                <Text style={{marginLeft:20,color:'white'}}>{currentDetails.currency}{currentDetails.price}</Text>
               </View>
             </View>
         );
@@ -143,7 +142,7 @@ class ItemComponent extends Component{
     });
 
 
-
+    console.log(JSON.stringify(this.state.items));
     return(
       <View>
         {transactions}
@@ -164,18 +163,17 @@ class ItemComponent extends Component{
           </View>
         </View>
 
-
-
         <View
-          style={{position: 'absolute',bottom:280}} >
+          style={{position:'absolute',bottom:320}}>
           {this.state.show?
             <PopupDialog
+              containerStyle={{zIndex: 10, elevation: 10}}
               dialogTitle={<DialogTitle title="Add Transaction" />}
               show={this.state.show}
               ref={(popupDialog) => { this.popupDialog = popupDialog; }}
               dialogAnimation={scaleAnimation}
             >
-              <View style={{justifyContent:'center',alignItems:'center'}}>
+              <View style={{zIndex:10,justifyContent:'center',alignItems:'center'}}>
                   <TextInput
                     value={this.state.name}
                     onChangeText={(name)=>this.setState({name:name})}
@@ -242,12 +240,13 @@ class ItemComponent extends Component{
 
           {this.state.remove?
             <PopupDialog
+              containerStyle={{zIndex: 10, elevation: 10}}
               dialogTitle={<DialogTitle title="Remove Transaction" />}
               show={this.state.remove}
               ref={(popupDialog) => { this.popupDialog = popupDialog; }}
               dialogAnimation={scaleAnimation}
             >
-              <View style={{justifyContent:'center',alignItems:'center'}}>
+              <View style={{zIndex:10,justifyContent:'center',alignItems:'center'}}>
                   <TextInput
                     value={this.state.name}
                     onChangeText={(name)=>this.setState({name:name})}
@@ -326,3 +325,10 @@ export default connect((store)=>{
     transaction: store.transaction
   }
 })(ItemComponent);
+
+
+// let newRow = currentItem.splice(currentItem.findIndex(e => e.name === obj.name),1);
+// return {
+//    ...currentItem,
+//    items: newRow
+// };

@@ -40,15 +40,18 @@ class CardComponent extends Component {
   }
 
   render() {
-    var itemInArray,numOfItems ;
-    this.state.datas.map((currentItem,currentIndex)=>{
-      if(currentItem.items){
-        numOfItems = currentItem.items.length;
-      }else{
-        numOfItems = 0;
-      }
-      itemInArray = <ItemComponent key={`key${currentItem.id}`} item = {currentItem} itemArray = {currentItem.items}/>;
+    let numOfItems = 0;
+    // console.log(this.props.transaction.transaction);
+
+    //  let numOfItems = this.state.datas.map((currentItem,currentIndex)=>{
+    //   return currentItem.id;
+    // });
+
+    let itemInArray = this.state.datas.map((currentItem,currentIndex)=>{
+      return <ItemComponent key={`key${currentItem.id}`} item = {currentItem} itemArray = {currentItem.items}/>;
     });
+
+    console.log(numOfItems);
     return (
       <View style={styles.card}>
         <TouchableOpacity

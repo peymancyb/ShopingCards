@@ -48,7 +48,6 @@ class Transaction extends Component {
     this.saveKey = this.saveKey.bind(this);
     this.resetKey = this.resetKey.bind(this);
     this.getKey = this.getKey.bind(this);
-
   }
 
   componentDidMount(){
@@ -62,7 +61,6 @@ class Transaction extends Component {
   }
 
   addCategory(){
-
     let rand = Math.floor(Math.random()*1000)+1;
     let obj = {
       id: rand,
@@ -70,14 +68,11 @@ class Transaction extends Component {
       icon: this.state.img,
       items:[]
     };
-    let oldData = this.state.datas;
-    oldData.push(obj);
-
-    this.saveKey(JSON.stringify(oldData));
-    this.props.dispatch(updateTransaction(oldData));
-
+    let newArr = this.state.datas;
+    newArr.push(obj);
+    this.props.dispatch(updateTransaction(newArr));
     this.setState({
-      datas: oldData
+      datas: newArr
     },()=>this.setState({
       activeFab: false,
       showCondition: false,
@@ -89,23 +84,20 @@ class Transaction extends Component {
       myKey: null,
     }));
   }
-
 removeCategory(){
   let toBeRemoved = this.state.removeCategory;
-  let oldData = this.state.datas;
-  var indexOfItem = null;
-  oldData.map((currentItem,currentIndex)=>{
-    if(currentItem.title === this.state.removeCategory){
-      indexOfItem = currentIndex;
-    };
+  let newArr = this.state.datas;
+  var tempArr = newArr.filter((ell)=>{
+    if(ell.title === toBeRemoved){
+      return false
+    }else{
+      return true
+    }
   });
-  if (indexOfItem > -1) {
-    oldData.splice((indexOfItem), 1);
-  }
-  this.saveKey(JSON.stringify(oldData));
-  this.props.dispatch(updateTransaction(oldData));
+  this.saveKey(JSON.stringify(tempArr));
+  this.props.dispatch(updateTransaction(tempArr));
   this.setState({
-    datas: oldData
+    datas: tempArr
   },()=>this.setState({
     activeFab: false,
     isRemove: !this.state.active,
@@ -202,6 +194,7 @@ async resetKey() {
 }
 
   render() {
+    console.log(this.state.datas);
     let cards = this.state.datas.map((currentItem , currentIndex)=>{
       return(
         <CardComponent
