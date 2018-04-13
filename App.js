@@ -21,13 +21,16 @@ import {
   Button,
   Icon,
   Title,Fab } from 'native-base';
+import {updateTransaction} from './redux/actions/transactionAction';
+import {Provider,connect} from 'react-redux';
+import store from './redux/main'
 
 
 console.disableYellowBox = true;
 
-export default class App extends Component {
-  constructor(){
-    super();
+class Transaction extends Component {
+  constructor(props){
+    super(props);
     this.state = {
       showCondition:false,
       active:false,
@@ -53,7 +56,18 @@ export default class App extends Component {
 
   }
 
+  componentDidMount(){
+    const data = this.state.datas;
+    const items = JSON.stringify(data);
+    this.saveKey(items);
+    this.setState({
+      datas: this.props.transaction
+    });
+  }
+
   addCategory(){
+    // this.props.dispatch(updateTransaction(false));
+
     let rand = Math.floor(Math.random()*1000)+1;
     let obj = {
       id: rand,
@@ -91,7 +105,6 @@ export default class App extends Component {
   }
 
 
-
 removeCategory(){
   let toBeRemoved = this.state.removeCategory;
   let oldData = this.state.datas;
@@ -119,8 +132,8 @@ removeCategory(){
     category:null,
     img:'',
     name:'',
-    date:'2018',
-    currency:'$',
+    date:'',
+    currency:'',
     price:'',
     myKey: null,
     removeCategory:'',
@@ -239,15 +252,9 @@ async resetKey() {
 }
 
 
-componentDidMount(){
-  const data = this.state.datas;
-  const items = JSON.stringify(data);
-  this.saveKey(items);
-}
-
-
 
   render() {
+    console.log(`transaction data from redux: ${JSON.stringify(this.state.datas)}`);
     let cards = this.state.datas.map((currentItem , currentIndex)=>{
       return(
         <CardComponent
@@ -303,3 +310,26 @@ componentDidMount(){
     );
   }
 }
+
+
+
+const TransactionComponent = connect((store)=>{
+  return{
+    transaction: store.transaction
+  };
+})(Transaction);
+
+
+export default class App extends Component{
+  constructor(props){
+    super(props);
+  }
+
+  render(){
+    return(
+      <Provider store={store}>
+        <TransactionComponent />
+      </Provider>
+    );
+  }
+};
