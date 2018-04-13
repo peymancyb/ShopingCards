@@ -194,7 +194,6 @@ async resetKey() {
 }
 
   render() {
-    console.log(this.state.datas);
     let cards = this.state.datas.map((currentItem , currentIndex)=>{
       return(
         <CardComponent
@@ -204,7 +203,6 @@ async resetKey() {
          />
       )
     });
-
     return (
       <Container>
         <Header

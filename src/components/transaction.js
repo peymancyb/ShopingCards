@@ -129,8 +129,10 @@ class ItemComponent extends Component{
   render(){
     let transactions = this.state.items.map((currentItem)=>{
       return currentItem.items.map((currentDetails)=>{
+        let rand = Math.floor(Math.random()*1000) + 1;
+
         return (
-            <View style={styles.details} key={`currentItem${currentItem.id}`}>
+            <View style={styles.details} key={`currentItem${currentItem.id * rand}`}>
               <Text style={{color:'white',flex:3}}>{currentDetails.name}</Text>
               <View style={styles.price}>
                 <Text style={{color:'white'}}>{currentDetails.date}</Text>
@@ -140,8 +142,6 @@ class ItemComponent extends Component{
         );
       });
     });
-
-
     console.log(JSON.stringify(this.state.items));
     return(
       <View>

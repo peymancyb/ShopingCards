@@ -42,14 +42,12 @@ class CardComponent extends Component {
   render() {
     let numOfItems = 0;
     // console.log(this.props.transaction.transaction);
-
     //  let numOfItems = this.state.datas.map((currentItem,currentIndex)=>{
     //   return currentItem.id;
     // });
 
-    let itemInArray = this.state.datas.map((currentItem,currentIndex)=>{
-      return <ItemComponent key={`key${currentItem.id}`} item = {currentItem} itemArray = {currentItem.items}/>;
-    });
+
+    let itemInArray = this.state.datas.map((currentItem,currentIndex,mainArr)=> <ItemComponent key={`key${currentItem.id}`} item = {currentItem} itemArray = {currentItem.items}/>);
 
     console.log(numOfItems);
     return (
@@ -67,7 +65,12 @@ class CardComponent extends Component {
            </View>
          </View>
        </TouchableOpacity>
-         {(this.state.isOn)?<View>{itemInArray}</View>: ''}
+         {(this.state.isOn)?
+           <View>
+            {itemInArray}
+           </View>
+           :
+            ''}
       </View>
     );
   }
