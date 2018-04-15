@@ -13,7 +13,7 @@ const height = window.height;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#5067FF',
+    backgroundColor: 'lightblue',
     alignItems: 'center',
     // justifyContent: 'center',
 
@@ -22,27 +22,27 @@ const styles = StyleSheet.create({
     borderRadius:5,
     marginTop:20,
     width: width - 10,
-    borderColor: 'white',
+    borderColor: 'black',
     borderWidth: 2,
   },
   cardHeader:{
     borderBottomWidth:1,
-    borderColor:'white',
+    borderColor:'black',
     flexDirection:'row',
   },
   cardPic:{
-    backgroundColor:'white',
+    backgroundColor:'transparent',
     borderRadius:40,
     width:80,
     height:80,
-    borderColor:'white',
+    borderColor:'black',
     borderWidth:2,
     margin:10,
   },
   title:{
     marginTop:20,
     fontSize:18,
-    color:'white',
+    color:'black',
     fontWeight:'bold',
   },
   details:{
@@ -58,12 +58,12 @@ const styles = StyleSheet.create({
   inputStyle:{
     width:250,
     height:40,
-    borderColor:"white",
+    borderColor:"black",
     borderWidth:1,
     padding:10,
     marginTop:10,
     borderRadius:5,
-    color:'white',
+    color:'black',
   },
   addBtn:{
     alignItems:'center',
@@ -87,6 +87,18 @@ const styles = StyleSheet.create({
     color:'white',
     fontSize:18,
     marginTop:5,
+  },
+  addStyle:{
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center',
+    backgroundColor: '#34A34F',
+  },
+  removeStyle:{
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center',
+    backgroundColor: '#DD5144',
   }
 });
 

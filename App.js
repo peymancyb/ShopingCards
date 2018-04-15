@@ -10,10 +10,6 @@ import TransactionComponent from './Transaction';
 console.disableYellowBox = true;
 
 export default class App extends Component{
-  constructor(props){
-    super(props);
-
-  }
   render(){
     return(
       <Provider store={store}>
@@ -22,17 +18,3 @@ export default class App extends Component{
     );
   }
 };
-
-// let obj = {
-//   id: rand,
-//   title: this.state.category,
-//   icon: this.state.img,
-//   items:[
-//     {
-//       name: this.state.name,
-//       date: this.state.date,
-//       price: this.state.price,
-//       currency: this.state.currency,
-//     }
-//   ]
-// };

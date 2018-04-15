@@ -5,6 +5,7 @@ import {
   TextInput,
   AsyncStorage,
   ScrollView,
+  Modal,
   TouchableOpacity,
   } from 'react-native';
 import CardComponent from './src/components/card';
@@ -15,39 +16,47 @@ import {
   Container,
   Header,
   Left,
+  Form,
+  Picker,
   Body,
   Right,
   Button,
   Icon,
   Title,Fab } from 'native-base';
 import {updateTransaction} from './redux/actions/transactionAction';
-import {Provider,connect} from 'react-redux';
+import {connect} from 'react-redux';
 import store from './redux/main'
 import ImagePicker from 'react-native-image-picker';
+import PopupDialog, {
+  DialogTitle,
+  DialogButton,
+  SlideAnimation,
+  ScaleAnimation,
+  FadeAnimation,
+ } from 'react-native-popup-dialog';
+ import DatePicker from 'react-native-datepicker';
 
-console.disableYellowBox = true;
+ const scaleAnimation = new ScaleAnimation();
+ const fadeAnimation = new FadeAnimation({ animationDuration: 150 });
+
+
+
 
 class Transaction extends Component {
   constructor(props){
     super(props);
     this.state = {
-      showCondition:false,
-      active:false,
-      activeFab:false,
-      datas:[],
-      isRemove:false,
+      isActive:false,
       category:'',
-      img:'',
       removeCategory:'',
+      datas:[],
+      img:'',
       myKey: null,
+      showOption:false,
     };
-
     this.addCategory = this.addCategory.bind(this);
     this.options = this.options.bind(this);
     this.removeCategory = this.removeCategory.bind(this);
-    this.saveKey = this.saveKey.bind(this);
-    this.resetKey = this.resetKey.bind(this);
-    this.getKey = this.getKey.bind(this);
   }
 
   componentDidMount(){
@@ -56,8 +65,14 @@ class Transaction extends Component {
     },()=>{
       const data = this.state.datas;
       const items = JSON.stringify(data);
-      this.saveKey(items);
     });
+  }
+
+  componentWillReceiveProps(nextProps){
+    console.log(nextProps.transaction.transaction);
+    this.setState({
+      datas: nextProps.transaction.transaction
+    })
   }
 
   addCategory(){
@@ -74,51 +89,49 @@ class Transaction extends Component {
     this.setState({
       datas: newArr
     },()=>this.setState({
-      activeFab: false,
-      showCondition: false,
-      active: !this.state.active,
+      showOption:false,
+      isActive: false,
       category:'',
+      removeCategory:'',
       img:'',
       date:'',
-      removeCategory:'',
       myKey: null,
     }));
   }
-removeCategory(){
-  let toBeRemoved = this.state.removeCategory;
-  let newArr = this.state.datas;
-  var tempArr = newArr.filter((ell)=>{
-    if(ell.title === toBeRemoved){
-      return false
-    }else{
-      return true
-    }
-  });
-  this.saveKey(JSON.stringify(tempArr));
-  this.props.dispatch(updateTransaction(tempArr));
-  this.setState({
-    datas: tempArr
-  },()=>this.setState({
-    activeFab: false,
-    isRemove: !this.state.active,
-    showCondition: false,
-    category:'',
-    img:'',
-    removeCategory:'',
-    myKey: null,
-  }));
-}
+  removeCategory(){
+    let toBeRemoved = this.state.removeCategory;
+    let newArr = this.state.datas;
+    var tempArr = newArr.filter((ell)=>{
+      if(ell.title === toBeRemoved){
+        return false
+      }else{
+        return true
+      }
+    });
+    this.props.dispatch(updateTransaction(tempArr));
+    this.setState({
+      datas: tempArr
+    },()=>this.setState({
+      showOption:false,
+      isActive: false,
+      removeCategory:'',
+      category:'',
+      img:'',
+      date:'',
+      myKey: null,
+    }));
+  }
 
 options(){
-  if(this.state.isRemove){
+  if(!this.state.isActive){
     return(
       <View style={[styles.container,{justifyContent:"center"}]}>
-        <Text style={{color:'white',fontSize:18}}> Delete Category</Text>
+        <Text style={{color:'black',fontSize:18}}> Delete Category</Text>
         <TextInput
           value={this.state.removeCategory}
           onChangeText={(removeCategory)=>this.setState({removeCategory:removeCategory})}
           placeholder={'Category Name'}
-          placeholderTextColor={'white'}
+          placeholderTextColor={'inputStyle'}
           style={styles.inputStyle}/>
           <View style={{justifyContent:"center",alignItems:"center"}}>
               <TouchableOpacity
@@ -127,7 +140,7 @@ options(){
                 <Text style={{color:'black'}}>Remove Category</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={()=>this.setState({isRemove:false,showCondition:false})}
+                onPress={()=>this.setState({showOption:false})}
                 style={styles.cancelBtn}>
                 <Text style={{color:'black'}}>Cancel</Text>
               </TouchableOpacity>
@@ -135,20 +148,21 @@ options(){
       </View>
     );
   }
-  if(this.state.active){
+
+  if(this.state.isActive){
     return (
       <View style={[styles.container,{justifyContent:"center"}]}>
       <TextInput
         value={this.state.category}
         onChangeText={(category)=>this.setState({category:category})}
         placeholder={'Category Name'}
-        placeholderTextColor={'white'}
+        placeholderTextColor={'black'}
         style={styles.inputStyle}/>
       <TextInput
         value={this.state.img}
         onChangeText={(img)=>this.setState({img:img})}
         placeholder={'Image URL'}
-        placeholderTextColor={'white'}
+        placeholderTextColor={'black'}
         style={styles.inputStyle}/>
       <View style={{justifyContent:"center",alignItems:"center"}}>
           <TouchableOpacity
@@ -157,54 +171,27 @@ options(){
             <Text style={{color:'black'}}>Add Category</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={()=>this.setState({active:false,showCondition:false})}
+            onPress={()=>this.setState({showOption:false})}
             style={styles.cancelBtn}>
             <Text style={{color:'black'}}>Cancel</Text>
           </TouchableOpacity>
         </View>
-    </View>);
-  }
-}
-
-  async getKey() {
-  try {
-    const value = await AsyncStorage.getItem('@MySuperStore:key');
-    this.setState({myKey: value});
-  } catch (error) {
-    console.log("Error retrieving data" + error);
-  }
-}
-
-async saveKey(value) {
-  try {
-    await AsyncStorage.setItem('@MySuperStore:key', value);
-  } catch (error) {
-    console.log("Error saving data" + error);
-  }
-}
-
-async resetKey() {
-  try {
-    await AsyncStorage.removeItem('@MySuperStore:key');
-    const value = await AsyncStorage.getItem('@MySuperStore:key');
-    this.setState({myKey: value});
-  } catch (error) {
-    console.log("Error resetting data" + error);
+    </View>
+    );
   }
 }
 
   render() {
-    let cards = this.state.datas.map((currentItem , currentIndex)=>{
-      return(
-        <CardComponent
-          key={`key${currentItem.id}`}
-          title = {currentItem.title}
-          icon = {currentItem.icon}
-         />
-      )
-    });
+    var cards = this.state.datas.map((currentItem)=>
+      <CardComponent
+         key = {`key${currentItem.id}`}
+         id = {currentItem.id}
+         title = {currentItem.title}
+         icon = {currentItem.icon}
+         items = {currentItem.items} />
+    );
     return (
-      <Container>
+      <Container style={{flex:1,backgroundColor:'lightblue'}}>
         <Header
           style={{backgroundColor:'#191970'}}>
           <Left>
@@ -212,54 +199,41 @@ async resetKey() {
               <Button transparent>
                 <Icon style={{color:'white'}} name='menu' />
               </Button>
-              <Text style={{color:'white',fontSize:18,fontWeight:"bold",marginLeft:30,textAlign:'center',paddingTop:5,}}>History</Text>
+              <Text style={{color:'white',fontSize:18,fontWeight:"bold",marginLeft:30,textAlign:'center',paddingTop:5}}>History</Text>
             </View>
           </Left>
         </Header>
 
-            {
-              this.state.showCondition ?
+          {
+            this.state.showOption ?
               this.options()
-              :
-              <View style={styles.container}>
+            :
+              <Body>
                 <ScrollView>
-                  {
-                    (this.state.datas.length === 0)?
-                      <View style={[styles.container,{marginTop:300}]}>
-                        <Text
-                          style={{fontSize:20,color:'white'}}
-                          onPress={() => this.setState({activeFab: false ,showCondition: true, active: true})}
-                          >
-                          Add Transaction
-                        </Text>
-                      </View>
-                      :
-                    cards
-                  }
+                  {cards}
                 </ScrollView>
-              </View>
-            }
+              </Body>
+          }
 
-            <Footer style={{backgroundColor:"#191970"}}>
-              <FooterTab>
-                <TouchableOpacity
-                   onPress={() => this.setState({activeFab: false ,showCondition: true, active: true})}
-                   style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor: '#34A34F' }}>
-                  <Icon name="add" style={{fontSize:45,color:'white'}} />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => this.setState({activeFab: false ,showCondition: true,isRemove: true})}
-                  style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor: '#DD5144' }}>
-                  <Icon style={{fontSize:45}} name="remove" />
-                </TouchableOpacity>
-              </FooterTab>
-            </Footer>
+        <Footer style={{backgroundColor:"#191970"}}>
+          <FooterTab>
+            <TouchableOpacity
+               onPress={() => this.setState({isActive: true,showOption: true},()=>this.options())}
+               style={styles.addStyle}>
+              <Icon name="add" style={{fontSize:45,color:'white'}} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.setState({isActive: false,showOption: true},()=>this.options())}
+              style={styles.removeStyle}>
+              <Icon style={{fontSize:45}} name="remove" />
+            </TouchableOpacity>
+          </FooterTab>
+        </Footer>
+
       </Container>
     );
   }
 }
-
-
 
 const TransactionComponent = connect((store)=>{
   return{

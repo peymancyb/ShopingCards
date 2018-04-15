@@ -10,3 +10,20 @@ const reducer = combineReducers({
 const store = createStore(reducer);
 
 export default store;
+
+
+
+// object sample here
+// let obj = {
+//   id: rand,
+//   title: this.state.category,
+//   icon: this.state.img,
+//   items:[
+//     {
+//       name: this.state.name,
+//       date: this.state.date,
+//       price: this.state.price,
+//       currency: this.state.currency,
+//     }
+//   ]
+// };
